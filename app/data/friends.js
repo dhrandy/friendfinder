@@ -27,7 +27,7 @@
 // Initially we just set it equal to a "dummy" customer.
 // But you could have it be an empty array as well.
 // ===============================================================================
-    var newAnswers = [
+    var friendArray = [
       {
         name: "Bob Jones",
         photo: "www.myphoto.com",
@@ -43,7 +43,7 @@
         answer10: "3"
       }
     ];
-    module.exports = tableArray;
+    module.exports = friendArray;
   
 
     
