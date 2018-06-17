@@ -1,3 +1,4 @@
+// Ended up not using this and went with the html
 (function() {
     function buildQuiz() {
       // we'll need a place to store the HTML output
