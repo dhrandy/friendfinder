@@ -3,42 +3,36 @@ var friendData = require("../data/friends");
 module.exports = function(app) {
     app.get("/api/friends", function(req, res) {
         res.json(friendData);
+        console.log(friendData);
     });
 
-
-
-
 app.post("/api/friends", function(req, res) {
-    friendData.push(req.body);
+    var totDiff;
+    var diffArry = [];
+    var newFriend = req.body;
 
-    var diffScores = [];
-    var lastIndex = friendsData.length - 1;
-    var arr1 = friendsData[lastIndex].scores
-    for (i = 0; i < friendsData.length - 1; i++) {
-        var arr2 = friendsData[i].scores
-        var totalScore = 0;
-        for (j = 0; j < arr1.length; j++) {
-            var quesScore = Math.abs(parseInt(arr1[j]) - parseInt(arr2[j]));
-            totalScore += quesScore;
-        }
-        diffScores.push(totalScore)
-    }
+    for (var i = 0; i < friendData.length; i++) {
+        totDiff = 0;
+        for (var j = 0; j < newFriend.scores.length; j++) {
+            totDiff += Math.abs(friendData[i].scores[j] - newFriend.scores[j]);
+        } //for j
+        diffArry.push(totDiff);
+    } //for i
 
-    // selects user with closest matching scores
-    var lowestScore = 40; // maximum difference
-    for (i = 0; i < diffScores.length; i++) {
-        if (diffScores[i] < lowestScore) {
-            lowestScore = diffScores[i];
-        }
-    }
-    var lowestScoreIndex = diffScores.indexOf(lowestScore);
-    var bestMatchName = friendsData[lowestScoreIndex].name;
-    var bestMatchPhoto = friendsData[lowestScoreIndex].photo;
-    var bestMatch = {
-        name: bestMatchName,
-        photo: bestMatchPhoto
-    }
+    var match = diffArry.indexOf(Math.min(...diffArry));
 
-    res.json(bestMatch);
+    friendData.push(newFriend);
+    
+    console.log(newFriend);
+
+    fs.readFile(path.join(__dirname, "../data/friends"), "utf8", function (err, data) {
+        if (err) throw err;
+        var json = JSON.parse(data);
+        json.push(newFriend);
+        fs.writeFile(path.join(__dirname, "../data/friends"), JSON.stringify(json, null, 2), function (err) {
+            if (err) throw err;
+        });
+    }); //fs.readFile
+    res.json(friendData[match]);
 });
-};
+}
